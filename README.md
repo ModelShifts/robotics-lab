@@ -15,6 +15,8 @@
 
 ## Features
 
+Planned for v1. Progress is tracked in the Roadmap below.
+
 - **ROS 2 node and latency tooling**: measure topic rates, end-to-end latency and jitter across a node graph.
 - **CAN bus logging and decoding**: record from SocketCAN or a virtual bus, decode with a DBC file, export to CSV or Parquet.
 - **Paper re-implementations in simulation**: compact, readable re-implementations of selected robotics papers (to be announced).
