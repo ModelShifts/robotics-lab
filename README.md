@@ -15,7 +15,7 @@
 
 ## Features
 
-All 3 features below work in v1. See [Limitations](#limitations) for what they do not cover.
+All three features below work in v1. See [Limitations](#limitations) for what they do not cover yet.
 
 - **ROS 2 node and latency tooling**: measure topic rates, end-to-end latency and jitter on a rosbag2 (mcap) recording of a node graph. The included graph is a joint sensor, a controller and a plant, written by a pure-Python simulator. Reading the bag does not need a ROS 2 install.
 - **CAN bus logging and decoding**: record from a python-can bus (virtual by default, SocketCAN when the channel exists), decode with a DBC file, and export CSV or Parquet. A second command reports per-message rate, jitter, Sequence-matched latency and bus load.
