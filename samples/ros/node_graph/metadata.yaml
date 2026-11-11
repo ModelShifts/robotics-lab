@@ -1,0 +1,46 @@
+rosbag2_bagfile_information:
+  compression_format: ''
+  compression_mode: ''
+  custom_data: null
+  duration:
+    nanoseconds: 1994830000
+  files:
+  - duration:
+      nanoseconds: 1994830000
+    message_count: 600
+    path: node_graph.mcap
+    starting_time:
+      nanoseconds_since_epoch: 1000000000
+  message_count: 600
+  relative_file_paths:
+  - node_graph.mcap
+  ros_distro: rosbags
+  starting_time:
+    nanoseconds_since_epoch: 1000000000
+  storage_identifier: mcap
+  topics_with_message_count:
+  - message_count: 200
+    topic_metadata:
+      name: /joint_states
+      offered_qos_profiles: []
+      serialization_format: cdr
+      type: sensor_msgs/msg/JointState
+      type_description_hash: 
+        RIHS01_a13ee3a330e346c9d87b5aa18d24e11690752bd33a0350f11c5882bc9179260e
+  - message_count: 200
+    topic_metadata:
+      name: /joint_commands
+      offered_qos_profiles: []
+      serialization_format: cdr
+      type: sensor_msgs/msg/JointState
+      type_description_hash: 
+        RIHS01_a13ee3a330e346c9d87b5aa18d24e11690752bd33a0350f11c5882bc9179260e
+  - message_count: 200
+    topic_metadata:
+      name: /joint_feedback
+      offered_qos_profiles: []
+      serialization_format: cdr
+      type: sensor_msgs/msg/JointState
+      type_description_hash: 
+        RIHS01_a13ee3a330e346c9d87b5aa18d24e11690752bd33a0350f11c5882bc9179260e
+  version: 9
