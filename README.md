@@ -1,60 +1,73 @@
 <p align="center">
-  <img src="assets/banner.svg" alt="robotics-lab" width="100%">
+  <img src="assets/banner.svg" alt="robotics-lab by Modelshifts" width="100%">
 </p>
 
-<p align="center"><em>ROS 2 and CAN bus tools, plus re-implementations of robotics papers.</em></p>
+<p align="center"><strong>A rosbag or a CAN trace goes in. Rates, latency and jitter come out. Two paper methods run in simulation.</strong></p>
 
 <p align="center">
+  <a href="https://github.com/ModelShifts/robotics-lab/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/ModelShifts/robotics-lab/ci.yml?branch=main&label=CI&style=flat-square&color=8a3a24"></a>
   <img alt="Status: v1" src="https://img.shields.io/badge/status-v1-8a3a24?style=flat-square">
   <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-1c1a17?style=flat-square">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-1c1a17?style=flat-square">
   <img alt="ROS 2 and CAN" src="https://img.shields.io/badge/ROS%202%20%7C%20CAN-1c1a17?style=flat-square">
 </p>
 
----
-
-## Features
-
-All three features below work in v1. See [Limitations](#limitations) for what they do not cover yet.
-
-- **ROS 2 node and latency tooling**: measure topic rates, end-to-end latency and jitter on a rosbag2 (mcap) recording of a node graph. The included graph is a joint sensor, a controller and a plant, written by a pure-Python simulator. Reading the bag does not need a ROS 2 install.
-- **CAN bus logging and decoding**: record from a python-can bus (virtual by default, SocketCAN when the channel exists), decode with a DBC file, and export CSV or Parquet. A second command reports per-message rate, jitter, Sequence-matched latency and bus load.
-- **Paper re-implementations in simulation**: discrete dynamic movement primitives (Ijspeert, Nakanishi, Hoffmann, Pastor and Schaal, 2013) and iterative LQR (Li and Todorov, 2004) on a pendulum, with finite-horizon LQR on a double integrator as the linear special case.
+<p align="center">
+  <img src="assets/demo.gif" alt="Web demo: a synthetic rosbag2 latency report with topic rates at 100 Hz, a CAN trace with bus load, and the DMP and iLQR plots." width="100%">
+</p>
+<p align="center"><sub>Web demo (<a href="assets/demo.mp4">MP4</a>). The plots are computed in the page from the synthetic samples. No model is used.</sub></p>
 
 <p align="center">
-  <img src="assets/demo.gif" alt="Web demo: the synthetic rosbag2 latency report, a CAN trace with bus load, and the DMP and iLQR plots" width="100%">
+  <img src="assets/results.svg" alt="Evaluation highlights: 24 of 24 checks passed; 12 ROS, 5 CAN and 7 paper checks; topic rates at 100 Hz." width="100%">
 </p>
-<p align="center"><sub>Web demo (<a href="assets/demo.mp4">MP4</a>). The plots are computed in the page from the synthetic samples. No model cache is used.</sub></p>
 
-## Architecture
+## The problem
 
-```mermaid
-%%{init: {"theme":"base","flowchart":{"curve":"basis","wrappingWidth":260},"themeVariables":{"fontFamily":"Georgia, Times New Roman, serif","fontSize":"14px","primaryColor":"#f3efe6","primaryTextColor":"#1c1a17","primaryBorderColor":"#1c1a17","lineColor":"#1c1a17","clusterBkg":"#faf7f0","clusterBorder":"#8a3a24","titleColor":"#8a3a24","edgeLabelBackground":"#f3efe6"}}}%%
-flowchart TB
-  subgraph ROS["ROS 2 tooling"]
-    direction LR
-    N1["Synthetic node graph"]:::ink --> LT["rosbag2 mcap<br/>rate · latency · jitter"]:::ink
-    LT --> RP["Report<br/>HTML · CSV · JSON"]:::ink
-  end
-  subgraph CAN["CAN bus utilities"]
-    direction LR
-    B["SocketCAN / virtual bus"]:::ink --> LG["Logger"]:::ink
-    LG --> DC["DBC decoder"]:::ink
-    DC --> EXP["CSV · Parquet · plots"]:::ink
-  end
-  subgraph PAP["Paper re-implementations"]
-    direction LR
-    P1["DMP · Ijspeert et al. 2013"]:::rust --> SIM["Simulation"]:::ink
-    P2["iLQR · Li and Todorov 2004"]:::rust --> SIM
-  end
-  ROS ~~~ CAN ~~~ PAP
+Imagine a joint loop on the bench: a sensor, a controller, a plant. You want the topic rate, the end-to-end latency, the jitter, and the same measurements on the CAN traces that travel with it — and, next to those, a chance to run the paper methods you are reading, from the published equations, in simulation.
 
-  classDef cl fill:#faf7f0,stroke:#8a3a24,stroke-dasharray:4 3,color:#8a3a24;
-  classDef ink fill:#f3efe6,stroke:#1c1a17,color:#1c1a17,stroke-width:1px;
-  classDef rust fill:#f3efe6,stroke:#8a3a24,color:#8a3a24,stroke-width:1.5px;
-```
+The useful result is a report you can check against the bag, plus two paper methods — discrete dynamic movement primitives and iterative LQR — that run from those equations.
 
-There is no language-model backend. Nothing in this repository calls an API or downloads a model.
+## How it works
+
+Three tools, and no language model.
+
+1. A rosbag2 (mcap) of a node graph comes in — here, a joint sensor, a controller and a plant, written by a pure-Python simulator. Reading the bag does not need a ROS 2 install.
+2. Topic rates, inter-arrival jitter and end-to-end latency (matched on `header.stamp`) are reported as HTML, CSV or JSON.
+3. A CAN trace is decoded with a DBC file and scored the same way: rate, jitter, Sequence-matched latency, and a bus-load estimate. The logger records a python-can virtual bus by default, or SocketCAN when the channel exists.
+4. Discrete DMPs (Ijspeert, Nakanishi, Hoffmann, Pastor and Schaal, 2013) and iterative LQR (Li and Todorov, 2004) run in simulation — a minimum-jerk path for the DMP, a pendulum for iLQR, and finite-horizon LQR on a double integrator as the linear special case.
+5. You get the report and the paper figures.
+
+<p align="center">
+  <img src="assets/pipeline.svg" alt="Pipeline: a rosbag2 or a CAN trace is analysed for rate, latency and jitter; discrete DMPs and iterative LQR run in simulation from the published equations; the result is a report and plots. There is no language-model backend." width="100%">
+</p>
+<p align="center"><sub>There is no language-model backend. Nothing in this repository calls an API or downloads a model.</sub></p>
+
+One of the samples, beside a paper figure:
+
+<p align="center">
+  <img src="assets/before-after.png" alt="Left: the ROS bag report on the synthetic node graph — topic rates at 100 Hz, feedback stamp latency 5.000 ms. Right: iLQR on a pendulum in simulation, cost decreasing over six steps." width="100%">
+</p>
+<p align="center"><sub>Synthetic rosbag2 and iLQR on a pendulum. 24/24 checks passed. Measured by <a href="scripts/evaluate.py"><code>scripts/evaluate.py</code></a>.</sub></p>
+
+## Results
+
+On the synthetic rosbag, the synthetic CAN trace, and the two paper methods in simulation, [`scripts/evaluate.py`](scripts/evaluate.py) passed **24 of 24 checks** against the generator settings: 12 ROS, 5 CAN, 4 DMP and 3 iLQR.
+
+| Group | Passed | Highlights (measured) |
+|---|---|---|
+| ROS bag (12) | 12/12 | Topic rates 100.007–100.009 Hz (expected 100.0 ± 0.02). Stamp latencies 0, 2.000000 and 5.000000 ms. Edges 2.000000, 3.000000 and 5.000000 ms (n=200). Jitter inside 0.15–0.45 ms on every topic. |
+| CAN (5) | 5/5 | 600 frames, unknown 0. Bus load 0.081199 (expected about 0.081). Edges 2.000000, 3.000000 and 5.000000 ms. |
+| DMP (4) | 4/4 | Reproduction RMSE 0.01072, goal error 0.000316, shape RMSE at a new goal 0.01072, time-scale ratio 2.0027. |
+| iLQR (3) | 3/3 | Cost 1.382×10⁴ → 1072 in 6 steps, monotone. Pendulum goal error 1.35×10⁻⁷. Riccati relative cost gap 1.16×10⁻¹⁶ on the double integrator. |
+| **All** | **24/24** | |
+
+**Methodology.** The thresholds are the generator settings (or a bound around them), not a claim about any other data. The rosbag is a pure-Python simulation of a joint sensor, a controller and a plant; the CAN trace is synthetic and is decoded with the committed DBC. DMP follows Ijspeert et al., Neural Computation, 2013, on a synthetic minimum-jerk path plus a negative Gaussian bump. iLQR follows Li and Todorov, ICINCO 2004, on one pendulum. Run with [`python scripts/evaluate.py`](scripts/evaluate.py) on 12 November 2026. The full 24-row table is in [`docs/eval.md`](docs/eval.md). Samples are in [`samples/`](samples/).
+
+## Why it matters
+
+A latency number without the bag it came from is a rumour. A report matched on `header.stamp`, next to the same measurements on the CAN trace, is a claim you can check — and the paper figures are a chance to run the equations, not only to look at a plot from the PDF.
+
+The tools read standard rosbag2 mcap and a DBC-decoded CAN log, so they fit next to a recorder a team already has. They have not been run on hardware or on live ROS 2 nodes yet.
 
 ## Quickstart
 
@@ -88,46 +101,28 @@ robotics-lab serve
 
 `ros analyze` also accepts `--csv`, `--html` and `--json`. `can analyze` does too.
 
-### Samples and tests
+`samples/` holds the synthetic rosbag and CAN trace, with generator settings as ground truth. Tests need no downloads: `pip install -e ".[dev]" && pytest`.
 
-`samples/ros/node_graph` is a rosbag2 mcap of the joint loop. `samples/can/trace.csv` is the same schedule as classical CAN frames, with `samples/can/robot.dbc`. Both are synthetic and regenerated by `scripts/make_samples.py`. `rosbags` is pinned because the mcap header contains its version; a different version would rewrite the bag bytes.
+## Backends
 
-```bash
-pip install -e ".[dev]"
-python scripts/make_samples.py   # regenerate samples/
-pytest                           # no network, no ROS install
-python scripts/evaluate.py       # compare measurements with the generator settings
-```
+<details>
+<summary>There is no language-model backend.</summary>
 
-### Citations
+Nothing in this repository calls an API or downloads a model. The tools depend on `rosbags`, `mcap`, `python-can` and `cantools`, and on NumPy for the paper methods. Reading a bag does not need a ROS 2 install. A bag can still be opened with `ros2 bag` where ROS 2 is installed.
 
-- Ijspeert, A. J., Nakanishi, J., Hoffmann, H., Pastor, P., and Schaal, S. (2013). Dynamical movement primitives: learning attractor models for motor behaviors. Neural Computation, 25(2), 328–373.
-- Li, W. and Todorov, E. (2004). Iterative linear quadratic regulator design for nonlinear biological movement systems. ICINCO.
-- Anderson, B. D. O. and Moore, J. B. (1990). Optimal Control: Linear Quadratic Methods. Prentice Hall. The double-integrator example is the finite-horizon Riccati special case of the same iteration.
-- Tassa, Y., Mansard, N., and Todorov, E. (2014). Control-limited differential dynamic programming. ICRA. Only the Q_uu regularization is used; control limits are not projected.
-- Davis, R. I., Burns, A., Bril, R. J., and Lukkien, J. J. (2007). Controller Area Network (CAN) schedulability analysis: refuted, revisited and revised. Real-Time Systems, 35, 239–272. The bus-load estimate uses this worst-case frame length.
+python-can is LGPL-3.0. cantools (MIT) depends on it. The other direct dependencies are MIT, BSD or Apache-2.0.
 
-`robotics-lab papers list` prints the same citations.
+</details>
 
-## Limitations
+## Notes
 
-- Live ROS 2 nodes are not included. Measuring a running graph needs rclpy, and this repository does not start a ROS 2 container in CI. The tools read and write rosbag2 mcap (CDR, ROS 2 Jazzy types) with `rosbags` and `mcap`, which do not need a ROS install. A bag can still be opened with `ros2 bag` where ROS 2 is installed.
-- SocketCAN is passed through to python-can. It was checked only as a missing-channel error. The virtual bus is what the tests and the web demo record. On the virtual bus the logger also sends the synthetic joint-loop frames, because that channel otherwise has no traffic. A SocketCAN recording is passive.
+- Not run on hardware or on real ROS 2 nodes yet. The rosbag and the CAN trace are synthetic; the paper methods run in simulation.
+- SocketCAN is passed through to python-can and was checked only as a missing-channel error. The virtual bus is what the tests and the demo record.
 - Bus load is a worst-case bit-stuffing estimate for classical CAN with 11-bit identifiers, including the 3-bit intermission. It is not a measurement of idle time on a wire, and it does not cover CAN FD.
-- python-can is LGPL-3.0. cantools (MIT) depends on it. The other direct dependencies are MIT, BSD or Apache-2.0 (`rosbags` is Apache-2.0, `mcap` is MIT).
-- The DMP figure follows the equations and the panel layout of Figure 1 in Ijspeert et al. 2013, on a synthetic minimum-jerk path plus a negative Gaussian bump. It is not a digitization of their plot. The rhythmic system from the same paper is not implemented. Basis widths are set from the center spacing with a constant the paper's Table 1 does not specify; see the note in `src/robotics_lab/papers/dmp.py`.
-- iLQR follows Li and Todorov 2004 on one pendulum (angle measured from upright, started hanging down). It is not their biomechanical arm. Torque is unlimited.
-- The samples and the paper demonstrations are synthetic. `scripts/evaluate.py` only checks these tools against the generator settings.
-- No language model is used.
+- The DMP figure is not a digitization of the paper’s plot, and the rhythmic system from the same paper is not implemented. iLQR is not their biomechanical arm, and torque is unlimited.
 
 ## Roadmap
 
-- [x] Repository scaffold and README
-- [x] ROS 2 topic rate and latency probes
-- [x] CAN logger for SocketCAN and virtual buses
-- [x] DBC decoding and export
-- [x] First paper re-implementation in simulation
-- [x] Second paper re-implementation in simulation
 - [ ] Live ROS 2 nodes under rclpy
 - [ ] CAN FD, and SocketCAN checked on hardware
 - [ ] Rhythmic DMPs
@@ -137,4 +132,4 @@ python scripts/evaluate.py       # compare measurements with the generator setti
 
 [MIT](LICENSE) © Modelshifts Technology Pte. Ltd.
 
-<p align="center"><sub>Part of the <a href="https://modelshifts.com/work">Modelshifts</a> showcase.</sub></p>
+<p align="center"><sub>Part of the <a href="https://modelshifts.com/work">Modelshifts</a> showcase. November 2026, v1.</sub></p>
