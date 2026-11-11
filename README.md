@@ -54,7 +54,7 @@ flowchart TB
 ```bash
 git clone https://github.com/ModelShifts/robotics-lab
 cd robotics-lab
-cp .env.example .env   # choose a backend
+cp .env.example .env   # CAN and ROS 2 settings
 pip install -e .
 robotics-lab ros latency --topic /joint_states
 robotics-lab can log --channel vcan0 --dbc robot.dbc --out log.parquet
