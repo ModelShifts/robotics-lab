@@ -1,0 +1,10 @@
+{
+  "description": "Same joint-loop schedule as the rosbag2 sample, encoded with samples/can/robot.dbc.",
+  "bitrate": 500000,
+  "samples": 200,
+  "frames": 600,
+  "frame_bits_worst_case_8byte": 135,
+  "controller_delay_ms": 2.0,
+  "plant_delay_ms": 3.0,
+  "end_to_end_ms": 5.0
+}

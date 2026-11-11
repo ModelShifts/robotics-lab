@@ -4,16 +4,26 @@ build-backend = "hatchling.build"
 
 [project]
 name = "robotics-lab"
-version = "0.0.1"
+version = "0.1.0"
 description = "ROS 2 and CAN bus tools, plus re-implementations of robotics papers."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 authors = [{ name = "Modelshifts", email = "info@modelshifts.com" }]
-dependencies = ["python-can>=4", "cantools>=39"]
+dependencies = [
+  "numpy>=1.26",
+  "rosbags==0.11.9",
+  "mcap>=1.2",
+  "python-can>=4.4",
+  "cantools>=39",
+  "pyarrow>=15",
+  "python-dotenv>=1",
+]
 
 [project.optional-dependencies]
 plots = ["matplotlib>=3.8"]
+demo = ["gradio>=5", "matplotlib>=3.8", "pillow>=10", "pandas>=2.2", "jinja2>=3.1.6"]
+dev = ["pytest>=8", "gradio>=5", "matplotlib>=3.8", "pillow>=10", "pandas>=2.2", "jinja2>=3.1.6"]
 
 [project.urls]
 Homepage = "https://modelshifts.com/work"
@@ -24,3 +34,6 @@ robotics-lab = "robotics_lab.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/robotics_lab"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

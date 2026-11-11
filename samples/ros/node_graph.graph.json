@@ -1,0 +1,47 @@
+{
+  "name": "joint loop",
+  "description": "Synthetic graph. joint_sensor publishes /joint_states. controller republishes the sample on /joint_commands after a processing delay. plant republishes it on /joint_feedback after an actuation delay. Every message keeps the sensor sample's header stamp.",
+  "period_ns": 10000000,
+  "nodes": [
+    {
+      "name": "joint_sensor",
+      "publishes": [
+        "/joint_states"
+      ]
+    },
+    {
+      "name": "controller",
+      "subscribes": [
+        "/joint_states"
+      ],
+      "publishes": [
+        "/joint_commands"
+      ],
+      "delay_ns": 2000000
+    },
+    {
+      "name": "plant",
+      "subscribes": [
+        "/joint_commands"
+      ],
+      "publishes": [
+        "/joint_feedback"
+      ],
+      "delay_ns": 3000000
+    }
+  ],
+  "edges": [
+    {
+      "source": "/joint_states",
+      "target": "/joint_commands"
+    },
+    {
+      "source": "/joint_commands",
+      "target": "/joint_feedback"
+    },
+    {
+      "source": "/joint_states",
+      "target": "/joint_feedback"
+    }
+  ]
+}
