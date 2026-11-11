@@ -22,24 +22,27 @@
 ## Architecture
 
 ```mermaid
-flowchart LR
+%%{init: {"theme":"base","flowchart":{"curve":"basis","wrappingWidth":260},"themeVariables":{"fontFamily":"Georgia, Times New Roman, serif","fontSize":"14px","primaryColor":"#f3efe6","primaryTextColor":"#1c1a17","primaryBorderColor":"#1c1a17","lineColor":"#1c1a17","clusterBkg":"#faf7f0","clusterBorder":"#8a3a24","titleColor":"#8a3a24","edgeLabelBackground":"#f3efe6"}}}%%
+flowchart TB
   subgraph ROS["ROS 2 tooling"]
-    direction TB
+    direction LR
     N1["Node graph"]:::ink --> LT["Latency + jitter probes"]:::ink
     LT --> RP["Report<br/>HTML · CSV"]:::ink
   end
   subgraph CAN["CAN bus utilities"]
-    direction TB
+    direction LR
     B["SocketCAN / virtual bus"]:::ink --> LG["Logger"]:::ink
     LG --> DC["DBC decoder"]:::ink
     DC --> EXP["CSV · Parquet · plots"]:::ink
   end
   subgraph PAP["Paper re-implementations"]
-    direction TB
+    direction LR
     P1["Paper 1 (to be announced)"]:::rust --> SIM["Simulation"]:::ink
     P2["Paper 2 (to be announced)"]:::rust --> SIM
   end
+  ROS ~~~ CAN ~~~ PAP
 
+  classDef cl fill:#faf7f0,stroke:#8a3a24,stroke-dasharray:4 3,color:#8a3a24;
   classDef ink fill:#f3efe6,stroke:#1c1a17,color:#1c1a17,stroke-width:1px;
   classDef rust fill:#f3efe6,stroke:#8a3a24,color:#8a3a24,stroke-width:1.5px;
 ```
