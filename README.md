@@ -62,10 +62,6 @@ robotics-lab ros latency --topic /joint_states
 robotics-lab can log --channel vcan0 --dbc robot.dbc --out log.parquet
 ```
 
-## Try it
-
-> **Coming soon.** A hosted demo will be linked here and on [modelshifts.com/work](https://modelshifts.com/work).
-
 ## Roadmap
 
 - [x] Repository scaffold and README
