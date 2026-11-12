@@ -117,7 +117,7 @@ python-can is LGPL-3.0. cantools (MIT) depends on it. The other direct dependenc
 ## Roadmap
 
 - [ ] Live ROS 2 nodes under rclpy
-- [ ] CAN FD, and SocketCAN checked on hardware
+- [ ] CAN FD and SocketCAN support
 - [ ] Rhythmic DMPs
 - [ ] Control limits in iLQR
 
