@@ -1,0 +1,150 @@
+{
+  "passed": 24,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "ROS /joint_commands rate",
+      "pass": true,
+      "expected": "100.0 Hz \u00b1 0.02",
+      "measured": "100.007538 Hz"
+    },
+    {
+      "check": "ROS /joint_commands jitter band",
+      "pass": true,
+      "expected": "0.15 ms < std < 0.45 ms",
+      "measured": "0.3045 ms"
+    },
+    {
+      "check": "ROS /joint_feedback rate",
+      "pass": true,
+      "expected": "100.0 Hz \u00b1 0.02",
+      "measured": "100.008543 Hz"
+    },
+    {
+      "check": "ROS /joint_feedback jitter band",
+      "pass": true,
+      "expected": "0.15 ms < std < 0.45 ms",
+      "measured": "0.2642 ms"
+    },
+    {
+      "check": "ROS /joint_states rate",
+      "pass": true,
+      "expected": "100.0 Hz \u00b1 0.02",
+      "measured": "100.007538 Hz"
+    },
+    {
+      "check": "ROS /joint_states jitter band",
+      "pass": true,
+      "expected": "0.15 ms < std < 0.45 ms",
+      "measured": "0.2585 ms"
+    },
+    {
+      "check": "ROS sensor stamp latency",
+      "pass": true,
+      "expected": "0 ms (stamp is the sample time)",
+      "measured": "1.73e-18 ms"
+    },
+    {
+      "check": "ROS command stamp latency",
+      "pass": true,
+      "expected": "2.0 ms",
+      "measured": "2.000000 ms"
+    },
+    {
+      "check": "ROS feedback stamp latency",
+      "pass": true,
+      "expected": "5.0 ms",
+      "measured": "5.000000 ms"
+    },
+    {
+      "check": "ROS edge /joint_states \u2192 /joint_commands",
+      "pass": true,
+      "expected": "2.0 ms, n=200",
+      "measured": "2.000000 ms, n=200"
+    },
+    {
+      "check": "ROS edge /joint_commands \u2192 /joint_feedback",
+      "pass": true,
+      "expected": "3.0 ms, n=200",
+      "measured": "3.000000 ms, n=200"
+    },
+    {
+      "check": "ROS edge /joint_states \u2192 /joint_feedback",
+      "pass": true,
+      "expected": "5.0 ms, n=200",
+      "measured": "5.000000 ms, n=200"
+    },
+    {
+      "check": "CAN frame count",
+      "pass": true,
+      "expected": "600",
+      "measured": "600, unknown 0"
+    },
+    {
+      "check": "CAN bus load",
+      "pass": true,
+      "expected": "about 0.081 (135 bits \u00d7 300 frames/s / 500000 bit/s)",
+      "measured": "0.081199"
+    },
+    {
+      "check": "CAN edge JointState \u2192 JointCommand",
+      "pass": true,
+      "expected": "2.0 ms",
+      "measured": "2.000000 ms"
+    },
+    {
+      "check": "CAN edge JointCommand \u2192 JointFeedback",
+      "pass": true,
+      "expected": "3.0 ms",
+      "measured": "3.000000 ms"
+    },
+    {
+      "check": "CAN edge JointState \u2192 JointFeedback",
+      "pass": true,
+      "expected": "5.0 ms",
+      "measured": "5.000000 ms"
+    },
+    {
+      "check": "DMP reproduction RMSE",
+      "pass": true,
+      "expected": "< 0.02",
+      "measured": "0.01072"
+    },
+    {
+      "check": "DMP goal error",
+      "pass": true,
+      "expected": "< 0.001",
+      "measured": "0.000316484"
+    },
+    {
+      "check": "DMP shape RMSE at new goal",
+      "pass": true,
+      "expected": "< 0.02",
+      "measured": "0.01072"
+    },
+    {
+      "check": "DMP time-scale ratio",
+      "pass": true,
+      "expected": "2 \u00b1 0.05",
+      "measured": "2.0027"
+    },
+    {
+      "check": "iLQR cost decreases",
+      "pass": true,
+      "expected": "monotone and final < initial/5",
+      "measured": "1.382e+04 \u2192 1072 in 6 steps"
+    },
+    {
+      "check": "iLQR pendulum goal error",
+      "pass": true,
+      "expected": "< 1e-4",
+      "measured": "1.35e-07"
+    },
+    {
+      "check": "iLQR matches Riccati on the double integrator",
+      "pass": true,
+      "expected": "relative cost gap < 1e-6, |position| < 0.02",
+      "measured": "gap 1.16e-16, position -0.00770, LQR cost 7.654202"
+    }
+  ]
+}
