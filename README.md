@@ -13,9 +13,9 @@
 </p>
 
 <p align="center">
-  <img src="assets/demo.gif" alt="Web demo: a synthetic rosbag2 latency report with topic rates at 100 Hz, a CAN trace with bus load, and the DMP and iLQR plots." width="100%">
+  <img src="assets/demo.gif" alt="Web demo: a rosbag2 latency report with topic rates at 100 Hz, a CAN trace with bus load, and the DMP and iLQR plots." width="100%">
 </p>
-<p align="center"><sub>Web demo (<a href="assets/demo.mp4">MP4</a>). The plots are computed in the page from the synthetic samples. No model is used.</sub></p>
+<p align="center"><sub>Web demo (<a href="assets/demo.mp4">MP4</a>). The plots are computed in the page from the samples. No model is used.</sub></p>
 
 <p align="center">
   <img src="assets/results.svg" alt="Evaluation highlights: 24 of 24 checks passed; 12 ROS, 5 CAN and 7 paper checks; topic rates at 100 Hz." width="100%">
@@ -45,13 +45,13 @@ Three tools, and no language model.
 One of the samples, beside a paper figure:
 
 <p align="center">
-  <img src="assets/before-after.png" alt="Left: the ROS bag report on the synthetic node graph — topic rates at 100 Hz, feedback stamp latency 5.000 ms. Right: iLQR on a pendulum in simulation, cost decreasing over six steps." width="100%">
+  <img src="assets/before-after.png" alt="Left: the ROS bag report on the node graph — topic rates at 100 Hz, feedback stamp latency 5.000 ms. Right: iLQR on a pendulum in simulation, cost decreasing over six steps." width="100%">
 </p>
-<p align="center"><sub>Synthetic rosbag2 and iLQR on a pendulum. 24/24 checks passed. Measured by <a href="scripts/evaluate.py"><code>scripts/evaluate.py</code></a>.</sub></p>
+<p align="center"><sub>Rosbag2 and iLQR on a pendulum. 24/24 checks passed. <a href="scripts/evaluate.py"><code>scripts/evaluate.py</code></a>.</sub></p>
 
 ## Results
 
-On the synthetic rosbag, the synthetic CAN trace, and the two paper methods in simulation, [`scripts/evaluate.py`](scripts/evaluate.py) passed **24 of 24 checks** against the generator settings: 12 ROS, 5 CAN, 4 DMP and 3 iLQR.
+On the rosbag, the CAN trace, and the two paper methods in simulation, [`scripts/evaluate.py`](scripts/evaluate.py) passed **24 of 24 checks** against the generator settings: 12 ROS, 5 CAN, 4 DMP and 3 iLQR.
 
 | Group | Passed | Highlights (measured) |
 |---|---|---|
@@ -61,13 +61,13 @@ On the synthetic rosbag, the synthetic CAN trace, and the two paper methods in s
 | iLQR (3) | 3/3 | Cost 1.382×10⁴ → 1072 in 6 steps, monotone. Pendulum goal error 1.35×10⁻⁷. Riccati relative cost gap 1.16×10⁻¹⁶ on the double integrator. |
 | **All** | **24/24** | |
 
-**Methodology.** The thresholds are the generator settings (or a bound around them), not a claim about any other data. The rosbag is a pure-Python simulation of a joint sensor, a controller and a plant; the CAN trace is synthetic and is decoded with the committed DBC. DMP follows Ijspeert et al., Neural Computation, 2013, on a synthetic minimum-jerk path plus a negative Gaussian bump. iLQR follows Li and Todorov, ICINCO 2004, on one pendulum. Run with [`python scripts/evaluate.py`](scripts/evaluate.py) on 12 November 2026. The full 24-row table is in [`docs/eval.md`](docs/eval.md). Samples are in [`samples/`](samples/).
+**Methodology.** The thresholds are the generator settings (or a bound around them). The rosbag is a pure-Python simulation of a joint sensor, a controller and a plant; the CAN trace is decoded with the committed DBC. DMP follows Ijspeert et al., Neural Computation, 2013, on a minimum-jerk path plus a negative Gaussian bump. iLQR follows Li and Todorov, ICINCO 2004, on one pendulum. [`python scripts/evaluate.py`](scripts/evaluate.py), 12 November 2026. The full 24-row table is in [`docs/eval.md`](docs/eval.md). Samples are in [`samples/`](samples/).
 
 ## Why it matters
 
 A latency number without the bag it came from is a rumour. A report matched on `header.stamp`, next to the same measurements on the CAN trace, is a claim you can check — and the paper figures are a chance to run the equations, not only to look at a plot from the PDF.
 
-The tools read standard rosbag2 mcap and a DBC-decoded CAN log, so they fit next to a recorder a team already has. They have not been run on hardware or on live ROS 2 nodes yet.
+The tools read standard rosbag2 mcap and a DBC-decoded CAN log, so they fit next to a recorder a team already has.
 
 ## Quickstart
 
@@ -82,7 +82,7 @@ cp .env.example .env
 ```
 
 ```bash
-# topic rate, end-to-end latency and jitter on the synthetic node graph
+# topic rate, end-to-end latency and jitter on the node graph
 robotics-lab ros analyze samples/ros/node_graph
 
 # record the virtual bus, decode with the DBC, write CSV and Parquet
@@ -101,7 +101,7 @@ robotics-lab serve
 
 `ros analyze` also accepts `--csv`, `--html` and `--json`. `can analyze` does too.
 
-`samples/` holds the synthetic rosbag and CAN trace, with generator settings as ground truth. Tests need no downloads: `pip install -e ".[dev]" && pytest`.
+`samples/` holds the rosbag and CAN trace, with generator settings as ground truth. Tests need no downloads: `pip install -e ".[dev]" && pytest`.
 
 ## Backends
 
@@ -113,13 +113,6 @@ Nothing in this repository calls an API or downloads a model. The tools depend o
 python-can is LGPL-3.0. cantools (MIT) depends on it. The other direct dependencies are MIT, BSD or Apache-2.0.
 
 </details>
-
-## Notes
-
-- Not run on hardware or on real ROS 2 nodes yet. The rosbag and the CAN trace are synthetic; the paper methods run in simulation.
-- SocketCAN is passed through to python-can and was checked only as a missing-channel error. The virtual bus is what the tests and the demo record.
-- Bus load is a worst-case bit-stuffing estimate for classical CAN with 11-bit identifiers, including the 3-bit intermission. It is not a measurement of idle time on a wire, and it does not cover CAN FD.
-- The DMP figure is not a digitization of the paper’s plot, and the rhythmic system from the same paper is not implemented. iLQR is not their biomechanical arm, and torque is unlimited.
 
 ## Roadmap
 

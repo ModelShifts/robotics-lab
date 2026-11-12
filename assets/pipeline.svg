@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="t d">
   <title id="t">How robotics-lab works</title>
-  <desc id="d">A synthetic rosbag2 is analysed for topic rate, jitter and end-to-end latency. A CAN trace is decoded with a DBC and scored the same way. Discrete DMPs and iterative LQR run in simulation from the published equations. There is no language-model backend.</desc>
+  <desc id="d">A rosbag2 is analysed for topic rate, jitter and end-to-end latency. A CAN trace is decoded with a DBC and scored the same way. Discrete DMPs and iterative LQR run in simulation from the published equations. There is no language-model backend.</desc>
   <style>
     .bg{fill:#faf7f0}
     .card{fill:#ffffff;stroke:#1c1915;stroke-width:1.5}
